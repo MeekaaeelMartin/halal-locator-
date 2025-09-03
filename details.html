@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Place details</title>
+    <link rel="stylesheet" href="./styles.css?v=3" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container header-row">
+        <a class="brand" href="/">Halaal Restaurant Finder SA</a>
+        <nav class="site-nav">
+          <a class="nav-link" href="/">Home</a>
+          <a class="nav-link" href="/locator.html">Locator</a>
+          <a class="nav-link" href="/about.html">About</a>
+          <a class="nav-link" href="/contact.html">Contact</a>
+        </nav>
+      </div>
+    </header>
+    <main>
+      <section class="container page">
+        <div id="detailRoot"></div>
+      </section>
+    </main>
+    <footer class="site-footer">
+      <div class="container">
+        <p>Built for South Africa • Data by Google Places</p>
+      </div>
+    </footer>
+    <script src="./config.js?v=3"></script>
+    <script>
+      (function(){
+        const params = new URLSearchParams(location.search);
+        const placeId = params.get('placeId');
+        const name = params.get('name') || '';
+        const root = document.getElementById('detailRoot');
+        if (!placeId) { root.innerHTML = '<p>Missing place ID.</p>'; return; }
+        const apiKey = window.MAPS_API_KEY;
+        const region = window.MAPS_REGION || 'ZA';
+        const script = document.createElement('script');
+        script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places&region=${region}`;
+        script.onload = () => render();
+        document.head.appendChild(script);
+        function render(){
+          const svc = new google.maps.places.PlacesService(document.createElement('div'));
+          svc.getDetails({ placeId, fields: ['name','formatted_address','formatted_phone_number','website','opening_hours','rating','user_ratings_total','photos','url','geometry','place_id','reviews','editorial_summary'] }, (p, status) => {
+            if (status !== google.maps.places.PlacesServiceStatus.OK || !p) { root.innerHTML = '<p>Could not load place details.</p>'; return; }
+            const photo = (p.photos && p.photos[0]) ? (function(){try{return p.photos[0].getUrl({maxWidth:900});}catch(e){return ''}})() : '';
+            root.innerHTML = `
+              ${photo ? `<img src="${photo}" alt="${p.name}" style="width:100%;border-radius:12px;margin-bottom:12px"/>` : ''}
+              <h1>${p.name||name}</h1>
+              <div class="muted">${p.formatted_address||''}</div>
+              <div style="margin:8px 0">${p.rating?`${p.rating.toFixed(1)}★`:''} ${p.user_ratings_total?`(${p.user_ratings_total})`:''}</div>
+              ${p.opening_hours && p.opening_hours.weekday_text ? `<details open><summary>Opening hours</summary><div class="muted">${p.opening_hours.weekday_text.map(x=>x).join('<br/>')}</div></details>`: ''}
+              ${p.editorial_summary && p.editorial_summary.overview ? `<p>${p.editorial_summary.overview}</p>`:''}
+              <div class="cta-row" style="margin-top:10px">
+                ${p.place_id ? `<a class="btn primary" target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination_place_id=${encodeURIComponent(p.place_id)}">Directions</a>`:''}
+                ${p.formatted_phone_number ? `<a class="btn secondary" href="tel:${p.formatted_phone_number.replace(/\s/g,'')}">Call</a>`:''}
+                ${p.website ? `<a class="btn tertiary" target="_blank" rel="noopener" href="${p.website}">Website</a>`:''}
+              </div>
+              ${Array.isArray(p.reviews) && p.reviews.length ? `<h3 style="margin-top:16px">Reviews</h3>${p.reviews.slice(0,5).map(r=>`<div style=\"margin:10px 0\"><div style=\"font-weight:600\">${r.author_name||''}</div><div class=\"muted\" style=\"font-size:12px\">${r.text||''}</div></div>`).join('')}`:''}
+            `;
+          });
+        }
+      })();
+    </script>
+  </body>
+  </html>
+
+
