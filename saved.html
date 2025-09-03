@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Saved Places</title>
+    <link rel="stylesheet" href="./styles.css?v=3" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container header-row">
+        <a class="brand" href="/">Halaal Restaurant Finder SA</a>
+        <nav class="site-nav">
+          <a class="nav-link" href="/">Home</a>
+          <a class="nav-link" href="/locator.html">Locator</a>
+          <a class="nav-link" href="/about.html">About</a>
+          <a class="nav-link" href="/contact.html">Contact</a>
+          <a class="nav-link active" href="/saved.html">Saved</a>
+        </nav>
+      </div>
+    </header>
+    <main>
+      <section class="container page">
+        <h1>Saved Places</h1>
+        <ul id="savedList" class="results-list"></ul>
+      </section>
+    </main>
+    <footer class="site-footer">
+      <div class="container">
+        <p>Built for South Africa • Data by Google Places</p>
+      </div>
+    </footer>
+    <script>
+      (function(){
+        const list = document.getElementById('savedList');
+        const saved = JSON.parse(localStorage.getItem('savedPlaces')||'[]');
+        if (!saved.length) {
+          list.innerHTML = '<li class="result-item"><div>No saved places yet.</div></li>';
+          return;
+        }
+        saved.forEach(p => {
+          const li = document.createElement('li');
+          li.className = 'result-item';
+          li.innerHTML = `<div><div class="result-title">${p.name}</div><div class="result-meta">${p.address||''}</div></div>`;
+          list.appendChild(li);
+        });
+      })();
+    </script>
+  </body>
+  </html>
+
+

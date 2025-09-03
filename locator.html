@@ -8,7 +8,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="./styles.css?v=2" />
+    <link rel="stylesheet" href="./styles.css?v=3" />
+    <link rel="manifest" href="/manifest.json" />
   </head>
   <body>
     <header class="site-header">
@@ -45,6 +46,17 @@
           <button id="toggleListBtn" class="btn tertiary mobile-only" aria-expanded="false" aria-controls="resultsPanel">Results</button>
         </div>
       </div>
+      <div class="container" id="filtersRow" style="margin-top:8px">
+        <div class="chip-row" role="group" aria-label="Cuisine filters">
+          <button class="chip" data-filter="">All</button>
+          <button class="chip" data-filter="indian">Indian</button>
+          <button class="chip" data-filter="middle eastern">Middle Eastern</button>
+          <button class="chip" data-filter="seafood">Seafood</button>
+          <button class="chip" data-filter="cafe">Cafe</button>
+          <button class="chip" data-filter="burger">Burgers</button>
+          <button class="chip" data-filter="pizza">Pizza</button>
+        </div>
+      </div>
       <div class="container subtle" id="statusMsg" role="status" aria-live="polite"></div>
     </section>
 
@@ -73,8 +85,12 @@
       </div>
     </footer>
 
-    <script src="./config.js?v=2" defer></script>
-    <script src="./app.js?v=2" defer></script>
+    <script src="https://unpkg.com/@googlemaps/markerclusterer/dist/index.min.js" defer></script>
+    <script src="./config.js?v=3" defer></script>
+    <script src="./app.js?v=3" defer></script>
+    <script>
+      if ('serviceWorker' in navigator) { navigator.serviceWorker.register('/sw.js'); }
+    </script>
   </body>
   </html>
 

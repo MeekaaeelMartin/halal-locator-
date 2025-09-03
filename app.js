@@ -10,10 +10,14 @@
   let infoWindow = null;
   /** @type {google.maps.Marker[]} */
   let markers = [];
+  /** @type {any | null} */
+  let markerCluster = null;
   /** @type {null | google.maps.places.PlaceResult[]} */
   let currentResults = null;
   /** @type {null | google.maps.places.PlaceSearchPagination} */
   let pagination = null;
+  /** @type {string} */
+  let selectedCuisine = '';
 
   const els = {
     searchInput: document.getElementById('searchInput'),
@@ -26,7 +30,8 @@
     statusMsg: document.getElementById('statusMsg'),
     resultsPanel: document.getElementById('resultsPanel'),
     toggleListBtn: document.getElementById('toggleListBtn'),
-    closeListBtn: document.getElementById('closeListBtn')
+    closeListBtn: document.getElementById('closeListBtn'),
+    filterChips: Array.from(document.querySelectorAll('.chip'))
   };
 
   function setStatus(message, type = 'info') {
@@ -77,6 +82,7 @@
 
     setupAutocomplete();
     wireEvents();
+    wireFilters();
     setStatus('');
   }
 
@@ -134,6 +140,18 @@
     }
   }
 
+  function wireFilters() {
+    if (!els.filterChips || !els.filterChips.length) return;
+    els.filterChips.forEach((chip) => {
+      chip.addEventListener('click', () => {
+        els.filterChips.forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+        selectedCuisine = chip.dataset.filter || '';
+        runSearch();
+      });
+    });
+  }
+
   function useMyLocation() {
     if (!navigator.geolocation) {
       setStatus('Geolocation not supported by your browser.', 'error');
@@ -177,7 +195,7 @@
     const request = {
       location: center,
       radius: radiusMeters,
-      keyword: 'halaal',
+      keyword: selectedCuisine ? `halaal ${selectedCuisine}` : 'halaal',
       type: 'restaurant'
     };
 
@@ -255,6 +273,7 @@
     if (!map || !results) return;
     const bounds = new google.maps.LatLngBounds();
 
+    const newMarkers = [];
     results.forEach((place, index) => {
       if (!place.geometry || !place.geometry.location) return;
       const position = place.geometry.location;
@@ -274,19 +293,49 @@
         }
       });
       markers.push(marker);
+      newMarkers.push(marker);
 
-      const content = renderInfoContent(place);
-      marker.addListener('click', () => {
-        infoWindow.setContent(content);
-        infoWindow.open(map, marker);
-      });
+      marker.addListener('click', () => onMarkerClick(place, marker));
     });
 
     if (!bounds.isEmpty()) {
       map.fitBounds(bounds, 60);
     }
 
+    // Marker clustering
+    try {
+      if (window.markerClusterer && window.markerClusterer.clearMarkers) {
+        window.markerClusterer.clearMarkers();
+      }
+      if (markerCluster && markerCluster.clearMarkers) {
+        markerCluster.clearMarkers();
+      }
+      if (window.MarkerClusterer && newMarkers.length) {
+        markerCluster = new window.MarkerClusterer({ map, markers: newMarkers });
+      }
+    } catch (e) {
+      // clustering optional
+    }
+
     renderList(results);
+  }
+
+  function onMarkerClick(place, marker) {
+    // If we have place_id, get richer details
+    if (place.place_id) {
+      try {
+        placesService.getDetails({ placeId: place.place_id, fields: ['name','formatted_address','formatted_phone_number','website','opening_hours','rating','user_ratings_total','photos','url','geometry','place_id'] }, (detail, status) => {
+          const p = status === google.maps.places.PlacesServiceStatus.OK && detail ? detail : place;
+          infoWindow.setContent(renderInfoContent(p));
+          infoWindow.open(map, marker);
+        });
+        return;
+      } catch (e) {
+        // fall through to basic content
+      }
+    }
+    infoWindow.setContent(renderInfoContent(place));
+    infoWindow.open(map, marker);
   }
 
   function distanceMeters(a, b) {
@@ -338,15 +387,32 @@
         li.appendChild(meta1);
         li.appendChild(meta2);
 
+        // Open on click
         li.addEventListener('click', () => {
           const marker = markers.find(m => m.getTitle() === place.name);
           if (marker) {
             map.panTo(marker.getPosition());
             map.setZoom(Math.max(map.getZoom(), 15));
-            infoWindow.setContent(renderInfoContent(place));
-            infoWindow.open(map, marker);
+            onMarkerClick(place, marker);
           }
         });
+
+        // Save button
+        const saveBtn = document.createElement('button');
+        saveBtn.className = 'btn tertiary';
+        saveBtn.style.padding = '6px 10px';
+        saveBtn.style.fontSize = '12px';
+        saveBtn.textContent = 'Save';
+        saveBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const saved = JSON.parse(localStorage.getItem('savedPlaces')||'[]');
+          const item = { name: place.name, address: place.vicinity || place.formatted_address || '', placeId: place.place_id || '' };
+          if (!saved.some(s => s.placeId === item.placeId && item.placeId)) saved.push(item);
+          localStorage.setItem('savedPlaces', JSON.stringify(saved));
+          setStatus('Saved to your list.');
+        });
+
+        li.appendChild(saveBtn);
 
         els.resultsList.appendChild(li);
       });
@@ -358,11 +424,27 @@
     const rating = place.rating ? `${place.rating.toFixed(1)}★` : '';
     const total = place.user_ratings_total ? `(${place.user_ratings_total})` : '';
     const openNow = place.opening_hours && typeof place.opening_hours.isOpen === 'function' ? (place.opening_hours.isOpen() ? 'Open' : 'Closed') : '';
+    const phone = place.formatted_phone_number || '';
+    const website = place.website || '';
+    const placeId = place.place_id || '';
+    let photoUrl = '';
+    try {
+      if (place.photos && place.photos.length) {
+        photoUrl = place.photos[0].getUrl({ maxWidth: 400, maxHeight: 250 });
+      }
+    } catch (e) {}
+    const directions = placeId ? `https://www.google.com/maps/dir/?api=1&destination_place_id=${encodeURIComponent(placeId)}` : (addr ? `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(addr)}` : '');
     return `
-      <div style="min-width:220px">
+      <div style="min-width:260px;max-width:320px">
+        ${photoUrl ? `<div style=\"margin-bottom:8px\"><img alt=\"${escapeHtml(name)}\" src=\"${photoUrl}\" style=\"width:100%;border-radius:10px\"/></div>` : ''}
         <div style="font-weight:700;margin-bottom:4px">${escapeHtml(name)}</div>
         <div style="color:#64748b;font-size:12px;margin-bottom:6px">${escapeHtml(addr)}</div>
-        <div style="font-size:12px">${rating} ${total} ${openNow}</div>
+        <div style="font-size:12px;margin-bottom:8px">${rating} ${total} ${openNow}</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          ${directions ? `<a target=\"_blank\" rel=\"noopener\" href=\"${directions}\" class=\"btn primary\" style=\"padding:6px 10px;border-radius:8px;font-size:12px\">Directions</a>` : ''}
+          ${phone ? `<a href=\"tel:${phone.replace(/\s/g,'')}\" class=\"btn secondary\" style=\"padding:6px 10px;border-radius:8px;font-size:12px\">Call</a>` : ''}
+          ${website ? `<a target=\"_blank\" rel=\"noopener\" href=\"${website}\" class=\"btn tertiary\" style=\"padding:6px 10px;border-radius:8px;font-size:12px\">Website</a>` : ''}
+        </div>
       </div>
     `;
   }
