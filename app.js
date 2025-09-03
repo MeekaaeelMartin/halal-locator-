@@ -31,7 +31,8 @@
     resultsPanel: document.getElementById('resultsPanel'),
     toggleListBtn: document.getElementById('toggleListBtn'),
     closeListBtn: document.getElementById('closeListBtn'),
-    filterChips: Array.from(document.querySelectorAll('.chip'))
+    filterChips: Array.from(document.querySelectorAll('.chip')),
+    includeButcheries: document.getElementById('includeButcheries')
   };
 
   function setStatus(message, type = 'info') {
@@ -150,6 +151,9 @@
         runSearch();
       });
     });
+    if (els.includeButcheries) {
+      els.includeButcheries.addEventListener('change', () => runSearch());
+    }
   }
 
   function useMyLocation() {
@@ -199,10 +203,23 @@
       type: 'restaurant'
     };
 
+    // Helper to merge butcheries if toggled
+    const maybeMergeButcheries = (baseResults, done) => {
+      if (!els.includeButcheries || !els.includeButcheries.checked) return done(baseResults);
+      const butchReq = { location: center, radius: radiusMeters, keyword: 'halaal butchery', type: 'store' };
+      placesService.nearbySearch(butchReq, (br, bs) => {
+        if (bs === google.maps.places.PlacesServiceStatus.OK && br && br.length) {
+          done([...(baseResults||[]), ...br]);
+        } else {
+          done(baseResults);
+        }
+      });
+    };
+
     // Primary search: keyword "halaal"
     placesService.nearbySearch(request, (results, status, pag) => {
       if (status === google.maps.places.PlacesServiceStatus.OK && results && results.length) {
-        handleResults(results, pag);
+        maybeMergeButcheries(results, (merged) => handleResults(merged, pag));
         return;
       }
       console.warn('[Places] nearbySearch halaal status', status, results);
@@ -210,7 +227,7 @@
       const requestHalal = { ...request, keyword: 'halal' };
       placesService.nearbySearch(requestHalal, (res2, status2, pag2) => {
         if (status2 === google.maps.places.PlacesServiceStatus.OK && res2 && res2.length) {
-          handleResults(res2, pag2);
+          maybeMergeButcheries(res2, (merged) => handleResults(merged, pag2));
           setStatus(`${res2.length} result(s) loaded (halal).`);
           return;
         }
@@ -221,7 +238,7 @@
         const textReq = bounds ? { query, bounds } : { query, location: center, radius: radiusMeters };
         placesService.textSearch(textReq, (res3, status3, pag3) => {
           if (status3 === google.maps.places.PlacesServiceStatus.OK && res3 && res3.length) {
-            handleResults(res3, pag3);
+            maybeMergeButcheries(res3, (merged) => handleResults(merged, pag3));
             setStatus(`${res3.length} result(s) loaded (text search).`);
             return;
           }
