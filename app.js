@@ -32,7 +32,10 @@
     toggleListBtn: document.getElementById('toggleListBtn'),
     closeListBtn: document.getElementById('closeListBtn'),
     filterChips: Array.from(document.querySelectorAll('.chip')),
-    includeButcheries: document.getElementById('includeButcheries')
+    includeButcheries: document.getElementById('includeButcheries'),
+    detailsPanel: document.getElementById('detailsPanel'),
+    detailsContent: document.getElementById('detailsContent'),
+    detailsCloseBtn: document.getElementById('detailsCloseBtn')
   };
 
   function setStatus(message, type = 'info') {
@@ -138,6 +141,9 @@
         els.resultsPanel.setAttribute('aria-hidden', 'true');
         if (els.toggleListBtn) els.toggleListBtn.setAttribute('aria-expanded', 'false');
       });
+    }
+    if (els.detailsCloseBtn && els.detailsPanel) {
+      els.detailsCloseBtn.addEventListener('click', () => closeDetails());
     }
   }
 
@@ -341,10 +347,11 @@
     // If we have place_id, get richer details
     if (place.place_id) {
       try {
-        placesService.getDetails({ placeId: place.place_id, fields: ['name','formatted_address','formatted_phone_number','website','opening_hours','rating','user_ratings_total','photos','url','geometry','place_id'] }, (detail, status) => {
+        placesService.getDetails({ placeId: place.place_id, fields: ['name','formatted_address','formatted_phone_number','website','opening_hours','rating','user_ratings_total','photos','url','geometry','place_id','reviews','editorial_summary'] }, (detail, status) => {
           const p = status === google.maps.places.PlacesServiceStatus.OK && detail ? detail : place;
           infoWindow.setContent(renderInfoContent(p));
           infoWindow.open(map, marker);
+          openDetails(p);
         });
         return;
       } catch (e) {
@@ -353,6 +360,7 @@
     }
     infoWindow.setContent(renderInfoContent(place));
     infoWindow.open(map, marker);
+    openDetails(place);
   }
 
   function distanceMeters(a, b) {
@@ -464,6 +472,33 @@
         </div>
       </div>
     `;
+  }
+
+  function openDetails(place) {
+    if (!els.detailsPanel || !els.detailsContent) return;
+    const dist = map && place.geometry && place.geometry.location ? (distanceMeters(map.getCenter(), place.geometry.location) / 1000).toFixed(1) + ' km' : '';
+    const photoUrl = (place.photos && place.photos.length) ? (() => { try { return place.photos[0].getUrl({ maxWidth: 700 }); } catch(e) { return ''; } })() : '';
+    const reviews = Array.isArray(place.reviews) ? place.reviews.slice(0,3) : [];
+    const desc = place.editorial_summary && place.editorial_summary.overview ? place.editorial_summary.overview : '';
+    els.detailsContent.innerHTML = `
+      ${photoUrl ? `<img src="${photoUrl}" alt="${escapeHtml(place.name||'')}" style="width:100%;border-radius:12px; margin-bottom:10px"/>` : ''}
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <div><strong>${escapeHtml(place.name||'')}</strong></div>
+        <div class="muted">${escapeHtml(place.formatted_address||'')}</div>
+        <div class="muted">${desc ? escapeHtml(desc) : ''}</div>
+        <div>${place.rating ? `${place.rating.toFixed(1)}★` : ''} ${place.user_ratings_total ? `(${place.user_ratings_total})` : ''} ${dist ? `• ${dist} from center` : ''}</div>
+        ${place.opening_hours && place.opening_hours.weekday_text ? `<div><details><summary>Opening hours</summary><div class="muted">${place.opening_hours.weekday_text.map(escapeHtml).join('<br/>')}</div></details></div>` : ''}
+        ${reviews.length ? `<div><h3 style="margin:10px 0 6px;font-size:14px">Recent reviews</h3>${reviews.map(r => `<div style=\"margin-bottom:8px\"><div style=\"font-weight:600\">${escapeHtml(r.author_name||'')}</div><div class=\"muted\" style=\"font-size:12px\">${escapeHtml(r.text||'')}</div></div>`).join('')}</div>` : ''}
+      </div>
+    `;
+    els.detailsPanel.classList.add('open');
+    els.detailsPanel.setAttribute('aria-hidden','false');
+  }
+
+  function closeDetails() {
+    if (!els.detailsPanel) return;
+    els.detailsPanel.classList.remove('open');
+    els.detailsPanel.setAttribute('aria-hidden','true');
   }
 
   function escapeHtml(str) {

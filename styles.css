@@ -68,6 +68,13 @@ body {
 .map-wrap { position: relative; background: #e2e8f0; }
 .map { width: 100%; height: calc(100vh - 220px); min-height: 420px; }
 
+/* Details panel */
+.details-panel { position: fixed; right: 0; top: 0; bottom: 0; width: min(420px, 92%); background: #fff; border-left: 1px solid var(--border); transform: translateX(100%); transition: transform .25s ease; z-index: 20; overflow: auto; box-shadow: -10px 0 30px rgba(2,6,23,0.12); }
+.details-panel.open { transform: translateX(0); }
+.details-header { position: sticky; top: 0; display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 12px; border-bottom: 1px solid var(--border); background: rgba(255,255,255,0.95); backdrop-filter: blur(6px); }
+.details-title { margin: 0; font-size: 16px; }
+.details-content { padding: 12px; }
+
 /* Mobile overlay list */
 .mobile-only { display: none; }
 @media (max-width: 900px) {
