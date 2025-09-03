@@ -42,6 +42,7 @@
       setStatus('Missing MAPS_API_KEY in config.js. See README for setup.', 'error');
       return;
     }
+    setStatus('Loading Google Maps…');
     const existing = document.querySelector('script[data-google-maps]');
     if (existing) return;
     const script = document.createElement('script');
@@ -50,6 +51,7 @@
     script.defer = true;
     script.dataset.googleMaps = 'true';
     script.onerror = () => {
+      console.error('[Maps] Script failed to load');
       setStatus('Failed to load Google Maps. Check network and API key restrictions.', 'error');
     };
     document.head.appendChild(script);
@@ -57,18 +59,25 @@
   }
 
   function initMap() {
-    map = new google.maps.Map(document.getElementById('map'), {
-      center: southAfricaCenter,
-      zoom: defaultZoom,
-      streetViewControl: false,
-      fullscreenControl: true,
-      mapTypeControl: false
-    });
+    try {
+      map = new google.maps.Map(document.getElementById('map'), {
+        center: southAfricaCenter,
+        zoom: defaultZoom,
+        streetViewControl: false,
+        fullscreenControl: true,
+        mapTypeControl: false
+      });
+    } catch (e) {
+      console.error('[Maps] initMap error', e);
+      setStatus('Unable to initialize map. See console for details.', 'error');
+      return;
+    }
     placesService = new google.maps.places.PlacesService(map);
     infoWindow = new google.maps.InfoWindow();
 
     setupAutocomplete();
     wireEvents();
+    setStatus('');
   }
 
   function setupAutocomplete() {
@@ -174,7 +183,8 @@
 
     placesService.nearbySearch(request, (results, status, pag) => {
       if (status !== google.maps.places.PlacesServiceStatus.OK || !results) {
-        setStatus('No results found. Try a different area or radius.', 'error');
+        console.warn('[Places] nearbySearch status', status, results);
+        setStatus(`Places search failed: ${status}. Adjust area or check API restrictions.`, 'error');
         return;
       }
       currentResults = results;
