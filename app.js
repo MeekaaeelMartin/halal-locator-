@@ -23,7 +23,10 @@
     clearBtn: document.getElementById('clearBtn'),
     resultsList: document.getElementById('resultsList'),
     pagination: document.getElementById('pagination'),
-    statusMsg: document.getElementById('statusMsg')
+    statusMsg: document.getElementById('statusMsg'),
+    resultsPanel: document.getElementById('resultsPanel'),
+    toggleListBtn: document.getElementById('toggleListBtn'),
+    closeListBtn: document.getElementById('closeListBtn')
   };
 
   function setStatus(message, type = 'info') {
@@ -54,7 +57,6 @@
     map = new google.maps.Map(document.getElementById('map'), {
       center: southAfricaCenter,
       zoom: defaultZoom,
-      mapId: 'DEMO_MAP_ID',
       streetViewControl: false,
       fullscreenControl: true,
       mapTypeControl: false
@@ -99,6 +101,23 @@
     if (els.clearBtn) {
       els.clearBtn.addEventListener('click', () => {
         clearResults();
+      });
+    }
+
+    // Mobile results panel toggle
+    if (els.toggleListBtn && els.resultsPanel) {
+      els.toggleListBtn.addEventListener('click', () => {
+        els.resultsPanel.classList.toggle('open');
+        const isOpen = els.resultsPanel.classList.contains('open');
+        els.resultsPanel.setAttribute('aria-hidden', String(!isOpen));
+        els.toggleListBtn.setAttribute('aria-expanded', String(isOpen));
+      });
+    }
+    if (els.closeListBtn && els.resultsPanel) {
+      els.closeListBtn.addEventListener('click', () => {
+        els.resultsPanel.classList.remove('open');
+        els.resultsPanel.setAttribute('aria-hidden', 'true');
+        if (els.toggleListBtn) els.toggleListBtn.setAttribute('aria-expanded', 'false');
       });
     }
   }

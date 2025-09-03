@@ -42,16 +42,20 @@
         <div class="control-actions">
           <button id="useLocationBtn" class="btn secondary">Use my location</button>
           <button id="searchBtn" class="btn primary">Search halaal</button>
+          <button id="toggleListBtn" class="btn tertiary mobile-only" aria-expanded="false" aria-controls="resultsPanel">Results</button>
         </div>
       </div>
       <div class="container subtle" id="statusMsg" role="status" aria-live="polite"></div>
     </section>
 
     <main class="layout">
-      <aside class="sidebar" id="resultsPanel">
+      <aside class="sidebar" id="resultsPanel" aria-hidden="true">
         <div class="sidebar-header">
           <h2>Results</h2>
-          <button id="clearBtn" class="link">Clear</button>
+          <div class="sidebar-actions">
+            <button id="clearBtn" class="link">Clear</button>
+            <button id="closeListBtn" class="link mobile-only" aria-label="Close results">Close</button>
+          </div>
         </div>
         <ul id="resultsList" class="results-list"></ul>
         <div id="pagination" class="pagination"></div>
