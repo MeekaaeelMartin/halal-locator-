@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Halaal Restaurant Finder SA</title>
+    <meta name="description" content="Find halaal restaurants across South Africa with a live map." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container">
+        <h1>Halaal Restaurant Finder SA</h1>
+        <p class="tagline">Discover halaal dining across South Africa</p>
+      </div>
+    </header>
+
+    <section class="controls">
+      <div class="container controls-grid">
+        <div class="control-group">
+          <label for="searchInput">City, suburb or address</label>
+          <input id="searchInput" type="text" placeholder="e.g. Sandton, Cape Town, Durban" />
+        </div>
+        <div class="control-group">
+          <label for="radiusSelect">Search radius</label>
+          <select id="radiusSelect">
+            <option value="2000">2 km</option>
+            <option value="5000" selected>5 km</option>
+            <option value="10000">10 km</option>
+            <option value="20000">20 km</option>
+            <option value="50000">50 km</option>
+          </select>
+        </div>
+        <div class="control-actions">
+          <button id="useLocationBtn" class="btn secondary">Use my location</button>
+          <button id="searchBtn" class="btn primary">Search halaal</button>
+        </div>
+      </div>
+      <div class="container subtle" id="statusMsg" role="status" aria-live="polite"></div>
+    </section>
+
+    <main class="layout">
+      <aside class="sidebar" id="resultsPanel">
+        <div class="sidebar-header">
+          <h2>Results</h2>
+          <button id="clearBtn" class="link">Clear</button>
+        </div>
+        <ul id="resultsList" class="results-list"></ul>
+        <div id="pagination" class="pagination"></div>
+      </aside>
+      <section class="map-wrap">
+        <div id="map" class="map" aria-label="Map showing halaal restaurants"></div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <p>
+          Built for South Africa • Data by Google Places • Always verify halaal status directly with the venue
+        </p>
+      </div>
+    </footer>
+
+    <!-- Config must define window.MAPS_API_KEY; copy config.example.js to config.js and set your key -->
+    <script src="./config.js" defer></script>
+    <script src="./app.js" defer></script>
+  </body>
+  </html>
+
+
