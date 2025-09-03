@@ -49,6 +49,9 @@
     script.async = true;
     script.defer = true;
     script.dataset.googleMaps = 'true';
+    script.onerror = () => {
+      setStatus('Failed to load Google Maps. Check network and API key restrictions.', 'error');
+    };
     document.head.appendChild(script);
     (window).initMap = initMap;
   }
