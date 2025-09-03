@@ -97,12 +97,37 @@
           <div class="feature"><p>“Traveling around SA is easier now.”</p><strong>— Mariam</strong></div>
         </div>
       </section>
+
+      <section class="container page">
+        <h2>Subscribe for updates</h2>
+        <p class="muted">Get new city coverage, features, and highlights. No spam.</p>
+        <form name="newsletter" method="POST" data-netlify="true" class="contact-form" action="/thanks.html">
+          <input type="hidden" name="form-name" value="newsletter" />
+          <div class="grid-2">
+            <div class="control-group">
+              <label for="newsletterName">Name</label>
+              <input id="newsletterName" name="name" type="text" />
+            </div>
+            <div class="control-group">
+              <label for="newsletterEmail">Email</label>
+              <input id="newsletterEmail" name="email" type="email" required />
+            </div>
+          </div>
+          <div class="control-actions">
+            <button class="btn primary" type="submit">Subscribe</button>
+          </div>
+        </form>
+      </section>
     </main>
 
     <footer class="site-footer">
       <div class="container">
         <p>
           Built for South Africa • Data by Google Places • Always verify halaal status directly with the venue
+        </p>
+        <p>
+          <a class="nav-link" href="https://instagram.com/halallocator" target="_blank" rel="noopener">Instagram</a>
+          <a class="nav-link" href="mailto:info@halallocator.co.za">Email</a>
         </p>
       </div>
     </footer>
