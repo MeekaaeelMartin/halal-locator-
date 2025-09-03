@@ -458,17 +458,19 @@
       }
     } catch (e) {}
     const directions = placeId ? `https://www.google.com/maps/dir/?api=1&destination_place_id=${encodeURIComponent(placeId)}` : (addr ? `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(addr)}` : '');
+    const detailsHref = placeId ? (() => { const u = new URL(location.origin + '/details.html'); u.searchParams.set('placeId', placeId); u.searchParams.set('name', name); return u.toString(); })() : '';
     return `
       <div style="min-width:260px;max-width:320px">
         ${photoUrl ? `<div style=\"margin-bottom:8px\"><img alt=\"${escapeHtml(name)}\" src=\"${photoUrl}\" style=\"width:100%;border-radius:10px\"/></div>` : ''}
         <div style="font-weight:700;margin-bottom:4px">${escapeHtml(name)}</div>
         <div style="color:#64748b;font-size:12px;margin-bottom:6px">${escapeHtml(addr)}</div>
         <div style="font-size:12px;margin-bottom:8px">${rating} ${total} ${openNow}</div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px">
           ${directions ? `<a target=\"_blank\" rel=\"noopener\" href=\"${directions}\" class=\"btn primary\" style=\"padding:6px 10px;border-radius:8px;font-size:12px\">Directions</a>` : ''}
           ${phone ? `<a href=\"tel:${phone.replace(/\s/g,'')}\" class=\"btn secondary\" style=\"padding:6px 10px;border-radius:8px;font-size:12px\">Call</a>` : ''}
           ${website ? `<a target=\"_blank\" rel=\"noopener\" href=\"${website}\" class=\"btn tertiary\" style=\"padding:6px 10px;border-radius:8px;font-size:12px\">Website</a>` : ''}
         </div>
+        ${detailsHref ? `<div><a class=\"btn tertiary\" href=\"${detailsHref}\" style=\"padding:6px 10px;border-radius:8px;font-size:12px\">More info</a></div>` : ''}
       </div>
     `;
   }
