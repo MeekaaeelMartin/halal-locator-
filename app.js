@@ -181,18 +181,51 @@
       type: 'restaurant'
     };
 
+    // Primary search: keyword "halaal"
     placesService.nearbySearch(request, (results, status, pag) => {
-      if (status !== google.maps.places.PlacesServiceStatus.OK || !results) {
-        console.warn('[Places] nearbySearch status', status, results);
-        setStatus(`Places search failed: ${status}. Adjust area or check API restrictions.`, 'error');
+      if (status === google.maps.places.PlacesServiceStatus.OK && results && results.length) {
+        handleResults(results, pag);
         return;
       }
-      currentResults = results;
-      pagination = pag || null;
-      renderResults(results);
-      setStatus(`${results.length} result(s) loaded${pag && pag.hasNextPage ? ' (more available)' : ''}.`);
-      renderPagination();
+      console.warn('[Places] nearbySearch halaal status', status, results);
+      // Fallback 1: try keyword "halal"
+      const requestHalal = { ...request, keyword: 'halal' };
+      placesService.nearbySearch(requestHalal, (res2, status2, pag2) => {
+        if (status2 === google.maps.places.PlacesServiceStatus.OK && res2 && res2.length) {
+          handleResults(res2, pag2);
+          setStatus(`${res2.length} result(s) loaded (halal).`);
+          return;
+        }
+        console.warn('[Places] nearbySearch halal status', status2, res2);
+        // Fallback 2: textSearch within bounds
+        const query = 'halaal restaurant';
+        const bounds = map.getBounds();
+        const textReq = bounds ? { query, bounds } : { query, location: center, radius: radiusMeters };
+        placesService.textSearch(textReq, (res3, status3, pag3) => {
+          if (status3 === google.maps.places.PlacesServiceStatus.OK && res3 && res3.length) {
+            handleResults(res3, pag3);
+            setStatus(`${res3.length} result(s) loaded (text search).`);
+            return;
+          }
+          console.warn('[Places] textSearch status', status3, res3);
+          setStatus(`No results. Status: ${status3}. Try a larger radius or different area.`, 'error');
+        });
+      });
     });
+  }
+
+  function handleResults(results, pag) {
+    currentResults = results;
+    pagination = pag || null;
+    renderResults(results);
+    setStatus(`${results.length} result(s) loaded${pag && pag.hasNextPage ? ' (more available)' : ''}.`);
+    renderPagination();
+    // Auto open results on mobile
+    if (els.resultsPanel && window.matchMedia('(max-width: 900px)').matches) {
+      els.resultsPanel.classList.add('open');
+      els.resultsPanel.setAttribute('aria-hidden', 'false');
+      if (els.toggleListBtn) els.toggleListBtn.setAttribute('aria-expanded', 'true');
+    }
   }
 
   function renderPagination() {
