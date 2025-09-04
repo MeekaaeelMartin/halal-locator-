@@ -17,6 +17,7 @@
         <nav class="site-nav">
           <a class="nav-link" href="/">Home</a>
           <a class="nav-link" href="/locator.html">Locator</a>
+          <a class="nav-link" href="/blog.html">Blog</a>
           <a class="nav-link active" href="/about.html">About</a>
           <a class="nav-link" href="/contact.html">Contact</a>
         </nav>
@@ -24,23 +25,55 @@
     </header>
 
     <main>
-      <section class="container page">
-        <h1>About</h1>
-        <p>
-          Halaal Restaurant Finder SA helps you discover halaal dining options across South Africa. It is built with Google Maps and Places, and is optimized for a fast, mobile-friendly experience.
-        </p>
-        <p class="muted">
-          Disclaimer: Results come from Google Places and may not always reflect current certification. Please verify halaal status directly with the venue.
-        </p>
-        <h2>Our mission</h2>
-        <p>Make it easy for anyone to find halaal food options wherever they are in South Africa—quickly, reliably, and on any device.</p>
+      <section class="about-hero" style="--about-hero:url('https://images.unsplash.com/photo-1559339352-11d035aa65de?auto=format&fit=crop&w=1800&q=60')">
+        <div class="container">
+          <h1>About Halal Locator</h1>
+          <p>Connecting you to authentic halal restaurants across South Africa.</p>
+        </div>
+      </section>
 
-        <h2>Coverage</h2>
-        <ul>
-          <li>All major metros: Johannesburg, Pretoria, Cape Town, Durban</li>
-          <li>Popular suburbs and townships with growing food scenes</li>
-          <li>Small towns as coverage grows</li>
-        </ul>
+      <section class="container page">
+        <h2>Our Story</h2>
+        <p>Halal Locator was born out of a simple idea — making it easier for people to find halal food, no matter where they are. As halal food lovers ourselves, we noticed how challenging it can be to discover trusted halal restaurants when traveling or even in our own cities. That’s why we built this platform — to simplify the search and connect communities with authentic halal dining options.</p>
+
+        <h2>Our Mission</h2>
+        <p>Our mission is to empower Muslims and halal-conscious individuals with quick, reliable access to halal restaurants and eateries. We believe that finding halal food should be easy, stress-free, and enjoyable. With Halal Locator, you can search by city, category, or even explore hidden gems near you.</p>
+
+        <h2>Our Vision</h2>
+        <p>We envision a world where halal food accessibility is no longer a challenge — where technology bridges communities and cultures. By continuously updating and expanding our listings, we aim to become the go-to platform for halal dining across South Africa and beyond.</p>
+
+        <h2>Our Team</h2>
+        <div class="grid-3">
+          <div class="feature">
+            <h3>Meekaaeel Martin</h3>
+            <p class="muted">Founder & Developer</p>
+          </div>
+          <div class="feature">
+            <h3>Community Contributors</h3>
+            <p class="muted">Adding halal spots every day</p>
+          </div>
+          <div class="feature">
+            <h3>Your Name Here</h3>
+            <p class="muted">Join us — contribute listings</p>
+          </div>
+        </div>
+
+        <div class="cta-row" style="justify-content:flex-start;margin-top:24px">
+          <a class="btn primary" href="/locator.html">Explore Locator</a>
+          <a class="btn secondary" href="#subscribe">Subscribe for Updates</a>
+        </div>
+
+        <div id="subscribe" class="subscribe-cta" style="margin-top:30px">
+          <div class="container">
+            <h2>Stay in the loop</h2>
+            <p class="muted">No spam. Unsubscribe anytime.</p>
+            <form name="newsletter-about" method="POST" data-netlify="true" class="subscribe-form" action="/thanks.html">
+              <input type="hidden" name="form-name" value="newsletter-about" />
+              <input name="email" type="email" placeholder="Enter your email" required />
+              <button class="btn primary" type="submit">Subscribe</button>
+            </form>
+          </div>
+        </div>
 
         <h2>FAQs</h2>
         <details>
@@ -65,6 +98,28 @@
         </p>
       </div>
     </footer>
+    <script>
+      (function(){
+        const storageKey = 'theme';
+        const setTheme = (t) => { document.documentElement.setAttribute('data-theme', t); localStorage.setItem(storageKey, t); };
+        const saved = localStorage.getItem(storageKey);
+        if (saved) setTheme(saved);
+        const nav = document.querySelector('.site-nav');
+        if (nav) {
+          const toggle = document.createElement('button');
+          toggle.className = 'btn tertiary';
+          toggle.type = 'button';
+          toggle.textContent = saved === 'dark' ? 'Light' : 'Dark';
+          toggle.addEventListener('click', () => {
+            const cur = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+            const next = cur === 'dark' ? 'light' : 'dark';
+            setTheme(next);
+            toggle.textContent = next === 'dark' ? 'Light' : 'Dark';
+          });
+          nav.appendChild(toggle);
+        }
+      })();
+    </script>
   </body>
   </html>
 

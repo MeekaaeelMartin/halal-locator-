@@ -17,6 +17,7 @@
         <nav class="site-nav">
           <a class="nav-link active" href="/">Home</a>
           <a class="nav-link" href="/locator.html">Locator</a>
+          <a class="nav-link" href="/blog.html">Blog</a>
           <a class="nav-link" href="/about.html">About</a>
           <a class="nav-link" href="/contact.html">Contact</a>
         </nav>
@@ -24,23 +25,18 @@
     </header>
 
     <main>
-      <section class="hero">
-        <div class="container hero-inner">
-          <div class="hero-text">
-            <h1>Find halaal restaurants across South Africa</h1>
-            <p class="lead">Search nearby halaal spots with live Google Maps, accurate Places data, and mobile-friendly navigation.</p>
-            <div class="cta-row">
-              <a class="btn primary" href="/locator.html">Open the Locator</a>
-              <a class="btn secondary" href="/about.html">Learn more</a>
-            </div>
-          </div>
-          <div class="hero-card">
-            <h3>Fast, accurate, and focused on SA</h3>
-            <ul class="hero-list">
-              <li>Powered by Google Maps & Places</li>
-              <li>Results biased to South Africa</li>
-              <li>Use your location or search any area</li>
-            </ul>
+      <section class="hero hero-bg">
+        <div class="hero-overlay"></div>
+        <div class="container hero-center">
+          <h1>Find halaal restaurants across South Africa</h1>
+          <p class="lead">Search nearby halaal spots with live Google Maps and accurate Places data.</p>
+          <form id="heroSearchForm" class="search-hero" role="search" aria-label="Search by city, suburb or address">
+            <input id="heroSearchInput" type="text" placeholder="Try Sandton, Cape Town, Durban…" aria-label="Search" />
+            <button class="btn primary" type="submit">Search halaal</button>
+          </form>
+          <div class="cta-row">
+            <a class="btn secondary" href="/locator.html">Open the Locator</a>
+            <a class="btn tertiary" href="/about.html">Learn more</a>
           </div>
         </div>
       </section>
@@ -64,59 +60,99 @@
 
       <section class="container page">
         <h2>How it works</h2>
-        <ol>
-          <li>Open the Locator and allow location access (optional).</li>
-          <li>Type a city or suburb, choose a radius, and search.</li>
-          <li>Browse the map and the list. Tap a result for details.</li>
-        </ol>
-      </section>
-
-      <section class="container page">
-        <h2>Popular cities</h2>
-        <div class="grid-3">
-          <div class="feature"><strong>Johannesburg</strong><p>Sandton, Rosebank, Fordsburg</p></div>
-          <div class="feature"><strong>Cape Town</strong><p>CBD, Century City, Claremont</p></div>
-          <div class="feature"><strong>Durban</strong><p>Umhlanga, Berea, North Beach</p></div>
+        <div class="grid-4 how-cards">
+          <div class="feature how-card"><div class="how-icon" aria-hidden="true">📍</div><h3>Choose an area</h3><p>Type a city, suburb, or use your current location.</p></div>
+          <div class="feature how-card"><div class="how-icon" aria-hidden="true">🗺️</div><h3>Adjust radius</h3><p>Control how far to search to find nearby options.</p></div>
+          <div class="feature how-card"><div class="how-icon" aria-hidden="true">🍽️</div><h3>Filter cuisine</h3><p>Refine by burgers, Indian, pizza, cafés and more.</p></div>
+          <div class="feature how-card"><div class="how-icon" aria-hidden="true">⭐</div><h3>Browse & save</h3><p>View ratings and save favourites for quick access.</p></div>
         </div>
       </section>
 
       <section class="container page">
-        <h2>Browse by category</h2>
-        <div class="grid-3">
-          <div class="feature"><strong>Restaurants</strong><p>Casual to fine dining</p></div>
-          <div class="feature"><strong>Cafés</strong><p>Coffee, brunch, desserts</p></div>
-          <div class="feature"><strong>Takeaway</strong><p>Quick bites on the go</p></div>
+        <div class="section-head">
+          <h2>Popular cities</h2>
+          <div class="carousel-arrows">
+            <button class="btn tertiary" data-carousel="cities" data-dir="-1" aria-label="Previous">‹</button>
+            <button class="btn tertiary" data-carousel="cities" data-dir="1" aria-label="Next">›</button>
+          </div>
+        </div>
+        <div class="carousel" id="citiesCarousel" aria-label="Popular cities">
+          <div class="carousel-track">
+            <a class="card-image" href="/locator.html?q=Johannesburg" style="--bg:url('https://images.unsplash.com/photo-1602009641595-c8b4d9c9f3a4?auto=format&fit=crop&w=1200&q=60')"><span>Johannesburg</span></a>
+            <a class="card-image" href="/locator.html?q=Cape Town" style="--bg:url('https://images.unsplash.com/photo-1501594907352-04cda38ebc29?auto=format&fit=crop&w=1200&q=60')"><span>Cape Town</span></a>
+            <a class="card-image" href="/locator.html?q=Durban" style="--bg:url('https://images.unsplash.com/photo-1533636721434-0e2d61030955?auto=format&fit=crop&w=1200&q=60')"><span>Durban</span></a>
+            <a class="card-image" href="/locator.html?q=Pretoria" style="--bg:url('https://images.unsplash.com/photo-1568610378278-7fefb725f0c1?auto=format&fit=crop&w=1200&q=60')"><span>Pretoria</span></a>
+            <a class="card-image" href="/locator.html?q=Port Elizabeth" style="--bg:url('https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=1200&q=60')"><span>Port Elizabeth</span></a>
+            <a class="card-image" href="/locator.html?q=Bloemfontein" style="--bg:url('https://images.unsplash.com/photo-1519682337058-a94d519337bc?auto=format&fit=crop&w=1200&q=60')"><span>Bloemfontein</span></a>
+          </div>
         </div>
       </section>
 
       <section class="container page">
-        <h2>What our users say</h2>
-        <div class="grid-3">
-          <div class="feature"><p>“I found halaal options near me in seconds.”</p><strong>— Aisha</strong></div>
-          <div class="feature"><p>“Simple, fast, and accurate results.”</p><strong>— Yusuf</strong></div>
-          <div class="feature"><p>“Traveling around SA is easier now.”</p><strong>— Mariam</strong></div>
+        <div class="section-head">
+          <h2>Browse by category</h2>
+        </div>
+        <div class="carousel" aria-label="Categories">
+          <div class="carousel-track">
+            <a class="card-image" href="/locator.html?cuisine=burger" style="--bg:url('https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=1200&q=60')"><span>Burgers</span></a>
+            <a class="card-image" href="/locator.html?cuisine=pizza" style="--bg:url('https://images.unsplash.com/photo-1548365328-9f547fb09530?auto=format&fit=crop&w=1200&q=60')"><span>Pizza</span></a>
+            <a class="card-image" href="/locator.html?cuisine=indian" style="--bg:url('https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=1200&q=60')"><span>Indian</span></a>
+            <a class="card-image" href="/locator.html?cuisine=cafe" style="--bg:url('https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=1200&q=60')"><span>Café</span></a>
+            <a class="card-image" href="/locator.html?cuisine=seafood" style="--bg:url('https://images.unsplash.com/photo-1544025162-8e1ff0f3c5f6?auto=format&fit=crop&w=1200&q=60')"><span>Seafood</span></a>
+            <a class="card-image" href="/locator.html?cuisine=butchery" style="--bg:url('https://images.unsplash.com/photo-1556742044-3c52d6e88c62?auto=format&fit=crop&w=1200&q=60')"><span>Butchery</span></a>
+          </div>
         </div>
       </section>
 
       <section class="container page">
-        <h2>Subscribe for updates</h2>
-        <p class="muted">Get new city coverage, features, and highlights. No spam.</p>
-        <form name="newsletter" method="POST" data-netlify="true" class="contact-form" action="/thanks.html">
-          <input type="hidden" name="form-name" value="newsletter" />
-          <div class="grid-2">
-            <div class="control-group">
-              <label for="newsletterName">Name</label>
-              <input id="newsletterName" name="name" type="text" />
+        <div class="section-head">
+          <h2>What users say</h2>
+          <div class="carousel-arrows">
+            <button class="btn tertiary" data-carousel="testimonials" data-dir="-1" aria-label="Previous">‹</button>
+            <button class="btn tertiary" data-carousel="testimonials" data-dir="1" aria-label="Next">›</button>
+          </div>
+        </div>
+        <div class="carousel" id="testimonialsCarousel" aria-label="Testimonials">
+          <div class="carousel-track">
+            <div class="testimonial-card">
+              <div class="avatar" style="--img:url('https://i.pravatar.cc/100?img=12')"></div>
+              <div class="quote">“Halal Locator has completely changed the way I find places to eat.”</div>
+              <div class="meta"><span class="stars" aria-label="5 stars">★★★★★</span> Fatima A. — Johannesburg</div>
             </div>
-            <div class="control-group">
-              <label for="newsletterEmail">Email</label>
-              <input id="newsletterEmail" name="email" type="email" required />
+            <div class="testimonial-card">
+              <div class="avatar" style="--img:url('https://i.pravatar.cc/100?img=7')"></div>
+              <div class="quote">“The search is super easy and I discovered new halal spots.”</div>
+              <div class="meta"><span class="stars" aria-label="4 stars">★★★★☆</span> Ahmed K. — Cape Town</div>
+            </div>
+            <div class="testimonial-card">
+              <div class="avatar" style="--img:url('https://i.pravatar.cc/100?img=3')"></div>
+              <div class="quote">“Love the simplicity and design! Quick and stress-free.”</div>
+              <div class="meta"><span class="stars" aria-label="5 stars">★★★★★</span> Layla M. — Durban</div>
+            </div>
+            <div class="testimonial-card">
+              <div class="avatar" style="--img:url('https://i.pravatar.cc/100?img=20')"></div>
+              <div class="quote">“Very helpful tool, especially the filters.”</div>
+              <div class="meta"><span class="stars" aria-label="4 stars">★★★★☆</span> Yusuf P. — Pretoria</div>
+            </div>
+            <div class="testimonial-card">
+              <div class="avatar" style="--img:url('https://i.pravatar.cc/100?img=15')"></div>
+              <div class="quote">“The map view is my favorite feature!”</div>
+              <div class="meta"><span class="stars" aria-label="5 stars">★★★★★</span> Aisha R. — Port Elizabeth</div>
             </div>
           </div>
-          <div class="control-actions">
+        </div>
+      </section>
+
+      <section class="subscribe-cta">
+        <div class="container">
+          <h2>Subscribe for updates</h2>
+          <p class="muted">No spam. Unsubscribe anytime.</p>
+          <form name="newsletter" method="POST" data-netlify="true" class="subscribe-form" action="/thanks.html">
+            <input type="hidden" name="form-name" value="newsletter" />
+            <input id="newsletterEmail" name="email" type="email" placeholder="Enter your email" required />
             <button class="btn primary" type="submit">Subscribe</button>
-          </div>
-        </form>
+          </form>
+        </div>
       </section>
     </main>
 
@@ -132,7 +168,56 @@
       </div>
     </footer>
 
-    <!-- No map on Home; scripts are loaded on locator.html only -->
+    <!-- Theme toggle and Home page interactions -->
+    <script>
+      (function(){
+        // Theme toggle
+        const storageKey = 'theme';
+        const setTheme = (t) => { document.documentElement.setAttribute('data-theme', t); localStorage.setItem(storageKey, t); };
+        const saved = localStorage.getItem(storageKey);
+        if (saved) setTheme(saved);
+        const nav = document.querySelector('.site-nav');
+        if (nav) {
+          const toggle = document.createElement('button');
+          toggle.className = 'btn tertiary';
+          toggle.type = 'button';
+          toggle.textContent = saved === 'dark' ? 'Light' : 'Dark';
+          toggle.addEventListener('click', () => {
+            const cur = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+            const next = cur === 'dark' ? 'light' : 'dark';
+            setTheme(next);
+            toggle.textContent = next === 'dark' ? 'Light' : 'Dark';
+          });
+          nav.appendChild(toggle);
+        }
+
+        const form = document.getElementById('heroSearchForm');
+        const input = document.getElementById('heroSearchInput');
+        if (form && input) {
+          form.addEventListener('submit', function(e){
+            e.preventDefault();
+            const q = (input.value || '').trim();
+            const url = new URL('/locator.html', location.origin);
+            if (q) url.searchParams.set('q', q);
+            location.href = url.toString();
+          });
+        }
+        function scrollByDir(track, dir){
+          const w = track.clientWidth;
+          track.scrollBy({ left: dir * (w * 0.9), behavior: 'smooth' });
+        }
+        document.querySelectorAll('[data-carousel][data-dir]').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const id = btn.getAttribute('data-carousel');
+            const dir = parseInt(btn.getAttribute('data-dir'), 10) || 1;
+            const el = id === 'cities' ? document.getElementById('citiesCarousel') : document.getElementById('testimonialsCarousel');
+            if (!el) return;
+            const track = el.querySelector('.carousel-track');
+            if (track) scrollByDir(track, dir);
+          });
+        });
+      })();
+    </script>
   </body>
   </html>
 

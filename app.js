@@ -33,9 +33,13 @@
     closeListBtn: document.getElementById('closeListBtn'),
     filterChips: Array.from(document.querySelectorAll('.chip')),
     includeButcheries: document.getElementById('includeButcheries'),
+    openNowChk: document.getElementById('openNowChk'),
+    minRatingSelect: document.getElementById('minRatingSelect'),
     detailsPanel: document.getElementById('detailsPanel'),
     detailsContent: document.getElementById('detailsContent'),
-    detailsCloseBtn: document.getElementById('detailsCloseBtn')
+    detailsCloseBtn: document.getElementById('detailsCloseBtn'),
+    toggleViewBtn: document.getElementById('toggleViewBtn'),
+    layout: document.querySelector('.layout')
   };
 
   function setStatus(message, type = 'info') {
@@ -87,6 +91,7 @@
     setupAutocomplete();
     wireEvents();
     wireFilters();
+    applyInitialQueryFromURL();
     setStatus('');
   }
 
@@ -125,6 +130,26 @@
         clearResults();
       });
     }
+    if (els.toggleViewBtn && els.layout) {
+      els.toggleViewBtn.addEventListener('click', () => {
+        const btn = els.toggleViewBtn;
+        const layout = els.layout;
+        if (layout.classList.contains('map-only')) {
+          layout.classList.remove('map-only');
+          layout.classList.add('list-only');
+          btn.textContent = 'Map + List';
+          btn.setAttribute('aria-pressed', 'false');
+        } else if (layout.classList.contains('list-only')) {
+          layout.classList.remove('list-only');
+          btn.textContent = 'Map + List';
+          btn.setAttribute('aria-pressed', 'false');
+        } else {
+          layout.classList.add('list-only');
+          btn.textContent = 'Show Map';
+          btn.setAttribute('aria-pressed', 'true');
+        }
+      });
+    }
 
     // Mobile results panel toggle
     if (els.toggleListBtn && els.resultsPanel) {
@@ -160,6 +185,49 @@
     if (els.includeButcheries) {
       els.includeButcheries.addEventListener('change', () => runSearch());
     }
+    if (els.openNowChk) {
+      els.openNowChk.addEventListener('change', () => runSearch());
+    }
+    if (els.minRatingSelect) {
+      els.minRatingSelect.addEventListener('change', () => runSearch());
+    }
+  }
+
+  function applyInitialQueryFromURL() {
+    try {
+      const params = new URLSearchParams(location.search);
+      const q = params.get('q') || '';
+      const cuisine = params.get('cuisine') || '';
+      const radiusParam = params.get('radius');
+      if (els.searchInput && q) {
+        els.searchInput.value = q;
+        // Try to center map to query using Places Text Search
+        try {
+          placesService.textSearch({ query: q, region: 'za' }, (res, status) => {
+            if (status === google.maps.places.PlacesServiceStatus.OK && res && res.length && res[0].geometry && res[0].geometry.location) {
+              map.setCenter(res[0].geometry.location);
+              map.setZoom(13);
+              runSearch();
+            } else {
+              runSearch();
+            }
+          });
+        } catch(e) { runSearch(); }
+      }
+      if (radiusParam && els.radiusSelect) {
+        const r = parseInt(radiusParam, 10);
+        if (!Number.isNaN(r)) els.radiusSelect.value = String(r);
+      }
+      if (cuisine && els.filterChips && els.filterChips.length) {
+        const chip = els.filterChips.find(c => (c.dataset.filter||'').toLowerCase() === cuisine.toLowerCase());
+        if (chip) {
+          els.filterChips.forEach(c => c.classList.remove('active'));
+          chip.classList.add('active');
+          selectedCuisine = chip.dataset.filter || '';
+          runSearch();
+        }
+      }
+    } catch (e) {}
   }
 
   function useMyLocation() {
@@ -208,6 +276,9 @@
       keyword: selectedCuisine ? `halaal ${selectedCuisine}` : 'halaal',
       type: 'restaurant'
     };
+    if (els.openNowChk && els.openNowChk.checked) {
+      request.openNow = true;
+    }
 
     // Helper to merge butcheries if toggled
     const maybeMergeButcheries = (baseResults, done) => {
@@ -380,23 +451,39 @@
     els.resultsList.innerHTML = '';
     const center = map.getCenter();
 
-    results
+    let processed = results
       .map(place => ({
         place,
         dist: place.geometry && place.geometry.location ? distanceMeters(center, place.geometry.location) : Infinity
       }))
       .sort((a, b) => a.dist - b.dist)
-      .forEach(({ place, dist }, idx) => {
+    if (els.minRatingSelect) {
+      const min = parseFloat(els.minRatingSelect.value || '0') || 0;
+      processed = processed.filter(x => (x.place.rating || 0) >= min);
+    }
+    processed.forEach(({ place, dist }, idx) => {
         const li = document.createElement('li');
-        li.className = 'result-item';
+        li.className = 'result-card';
 
+        const thumb = document.createElement('img');
+        thumb.className = 'result-thumb';
+        try {
+          if (place.photos && place.photos.length) {
+            thumb.src = place.photos[0].getUrl({ maxWidth: 180, maxHeight: 120 });
+            thumb.alt = place.name || '';
+          } else {
+            thumb.alt = '';
+          }
+        } catch(e) { thumb.alt = ''; }
+
+        const info = document.createElement('div');
+        info.className = 'result-info';
         const title = document.createElement('h3');
         title.className = 'result-title';
         title.textContent = place.name || 'Unknown';
-
-        const meta1 = document.createElement('div');
-        meta1.className = 'result-meta';
-        meta1.textContent = place.vicinity || place.formatted_address || '';
+        const addr = document.createElement('div');
+        addr.className = 'result-meta';
+        addr.textContent = place.vicinity || place.formatted_address || '';
 
         const meta2 = document.createElement('div');
         meta2.className = 'result-meta';
@@ -409,9 +496,9 @@
         halal.textContent = 'halaal';
 
         title.appendChild(halal);
-        li.appendChild(title);
-        li.appendChild(meta1);
-        li.appendChild(meta2);
+        info.appendChild(title);
+        info.appendChild(addr);
+        info.appendChild(meta2);
 
         // Open on click
         li.addEventListener('click', () => {
@@ -424,6 +511,8 @@
         });
 
         // Save button
+        const actions = document.createElement('div');
+        actions.className = 'result-actions';
         const saveBtn = document.createElement('button');
         saveBtn.className = 'btn tertiary';
         saveBtn.style.padding = '6px 10px';
@@ -437,9 +526,11 @@
           localStorage.setItem('savedPlaces', JSON.stringify(saved));
           setStatus('Saved to your list.');
         });
+        actions.appendChild(saveBtn);
 
-        li.appendChild(saveBtn);
-
+        li.appendChild(thumb);
+        li.appendChild(info);
+        li.appendChild(actions);
         els.resultsList.appendChild(li);
       });
   }

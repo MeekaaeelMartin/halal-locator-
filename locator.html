@@ -18,6 +18,7 @@
         <nav class="site-nav">
           <a class="nav-link" href="/">Home</a>
           <a class="nav-link active" href="/locator.html">Locator</a>
+          <a class="nav-link" href="/blog.html">Blog</a>
           <a class="nav-link" href="/about.html">About</a>
           <a class="nav-link" href="/contact.html">Contact</a>
         </nav>
@@ -44,6 +45,7 @@
           <button id="useLocationBtn" class="btn secondary">Use my location</button>
           <button id="searchBtn" class="btn primary">Search halaal</button>
           <button id="toggleListBtn" class="btn tertiary mobile-only" aria-expanded="false" aria-controls="resultsPanel">Results</button>
+          <button id="toggleViewBtn" class="btn tertiary" aria-pressed="false">Map + List</button>
         </div>
       </div>
       <div class="container" id="filtersRow" style="margin-top:8px">
@@ -56,6 +58,21 @@
           <button class="chip" data-filter="burger">Burgers</button>
           <button class="chip" data-filter="pizza">Pizza</button>
           <button class="chip" data-filter="butchery">Butchery</button>
+        </div>
+        <div class="chip-row" role="group" aria-label="Additional filters" style="margin-top:10px">
+          <label class="subtle" style="display:flex;align-items:center;gap:8px">
+            <input id="openNowChk" type="checkbox" /> Open now
+          </label>
+          <label class="subtle" style="display:flex;align-items:center;gap:8px">
+            Rating
+            <select id="minRatingSelect" style="padding:6px 8px;border-radius:8px;border:1px solid var(--border)">
+              <option value="0">Any</option>
+              <option value="3">3.0+</option>
+              <option value="3.5">3.5+</option>
+              <option value="4">4.0+</option>
+              <option value="4.5">4.5+</option>
+            </select>
+          </label>
         </div>
       </div>
       <div class="container subtle" id="statusMsg" role="status" aria-live="polite"></div>
@@ -70,7 +87,7 @@
             <button id="closeListBtn" class="link mobile-only" aria-label="Close results">Close</button>
           </div>
         </div>
-        <ul id="resultsList" class="results-list"></ul>
+        <ul id="resultsList" class="results-list cards"></ul>
         <div id="pagination" class="pagination"></div>
       </aside>
       <section class="map-wrap">
@@ -98,6 +115,28 @@
     <script src="https://unpkg.com/@googlemaps/markerclusterer/dist/index.min.js" defer></script>
     <script src="./config.js?v=4" defer></script>
     <script src="./app.js?v=4" defer></script>
+    <script>
+      (function(){
+        const storageKey = 'theme';
+        const setTheme = (t) => { document.documentElement.setAttribute('data-theme', t); localStorage.setItem(storageKey, t); };
+        const saved = localStorage.getItem(storageKey);
+        if (saved) setTheme(saved);
+        const nav = document.querySelector('.site-nav');
+        if (nav) {
+          const toggle = document.createElement('button');
+          toggle.className = 'btn tertiary';
+          toggle.type = 'button';
+          toggle.textContent = saved === 'dark' ? 'Light' : 'Dark';
+          toggle.addEventListener('click', () => {
+            const cur = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+            const next = cur === 'dark' ? 'light' : 'dark';
+            setTheme(next);
+            toggle.textContent = next === 'dark' ? 'Light' : 'Dark';
+          });
+          nav.appendChild(toggle);
+        }
+      })();
+    </script>
     <script>
       if ('serviceWorker' in navigator) { navigator.serviceWorker.register('/sw.js'); }
     </script>

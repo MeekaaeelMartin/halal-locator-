@@ -3,8 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Halaal Restaurant Finder SA — Contact</title>
-    <meta name="description" content="Contact the Halaal Restaurant Finder SA team." />
+    <title>Halaal Restaurant Finder SA — Blog</title>
+    <meta name="description" content="News, updates, and tips about halal dining in South Africa." />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -17,50 +17,42 @@
         <nav class="site-nav">
           <a class="nav-link" href="/">Home</a>
           <a class="nav-link" href="/locator.html">Locator</a>
-          <a class="nav-link" href="/blog.html">Blog</a>
+          <a class="nav-link active" href="/blog.html">Blog</a>
           <a class="nav-link" href="/about.html">About</a>
-          <a class="nav-link active" href="/contact.html">Contact</a>
+          <a class="nav-link" href="/contact.html">Contact</a>
         </nav>
       </div>
     </header>
 
     <main>
       <section class="container page">
-        <h1>Contact</h1>
-        <p>Questions, corrections, or suggestions? Send us a message. We value community input.</p>
-        <div class="contact-wrap">
-          <form name="contact" method="POST" action="/thanks.html" data-netlify="true" netlify-honeypot="bot-field" class="contact-form">
-            <input type="hidden" name="form-name" value="contact" />
-            <p style="display:none">
-              <label>Don’t fill this out: <input name="bot-field" /></label>
-            </p>
-            <div class="grid-2">
-              <div class="control-group">
-                <label for="name">Name</label>
-                <input id="name" name="name" type="text" required />
-              </div>
-              <div class="control-group">
-                <label for="email">Email</label>
-                <input id="email" name="email" type="email" required />
-              </div>
+        <h1>Blog & News</h1>
+        <p class="muted">Updates, guides, and highlights from the halal dining community.</p>
+        <div class="posts-grid">
+          <article class="post-card">
+            <img class="post-thumb" src="https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=1200&q=60" alt="Burgers" />
+            <div class="post-body">
+              <h3>Top halal burger spots in Johannesburg</h3>
+              <p>Our curated picks for juicy, halal-certified burgers across Joburg.</p>
+              <div class="post-meta">Guides • 5 min read</div>
             </div>
-            <div class="control-group">
-              <label for="message">Message</label>
-              <textarea id="message" name="message" rows="6" required></textarea>
+          </article>
+          <article class="post-card">
+            <img class="post-thumb" src="https://images.unsplash.com/photo-1548365328-9f547fb09530?auto=format&fit=crop&w=1200&q=60" alt="Pizza" />
+            <div class="post-body">
+              <h3>Where to find halal pizza in Cape Town</h3>
+              <p>From thin-crust classics to loaded deep-dish — halal and delicious.</p>
+              <div class="post-meta">City Guides • 4 min read</div>
             </div>
-            <div class="control-actions">
-              <button class="btn primary" type="submit">Send</button>
+          </article>
+          <article class="post-card">
+            <img class="post-thumb" src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=1200&q=60" alt="Coffee" />
+            <div class="post-body">
+              <h3>Best halal-friendly cafés to work from</h3>
+              <p>Wi‑Fi, good coffee, and halal snacks — our favourite picks.</p>
+              <div class="post-meta">Lifestyle • 3 min read</div>
             </div>
-          </form>
-
-          <aside class="contact-info">
-            <h3>Other ways to reach us</h3>
-            <div class="info-item">Email: <a href="mailto:info@halallocator.co.za">info@halallocator.co.za</a></div>
-            <div class="info-item">Instagram: <a href="https://instagram.com/halallocator" target="_blank" rel="noopener">@halallocator</a></div>
-            <div class="contact-map">
-              <iframe title="South Africa" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3355297.6923065483!2d20.254571444881383!3d-29.046785892110554!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1ef7ca5c9023b2db%3A0x35d4d3f9e853ee1f!2sSouth%20Africa!5e0!3m2!1sen!2sza!4v1699999999999" width="100%" height="220" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-            </div>
-          </aside>
+          </article>
         </div>
       </section>
     </main>
@@ -76,6 +68,7 @@
         </p>
       </div>
     </footer>
+
     <script>
       (function(){
         const storageKey = 'theme';
