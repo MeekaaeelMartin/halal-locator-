@@ -441,8 +441,9 @@ h3 { font-size: clamp(20px, 2.5vw, 24px); font-weight: 600; margin: 0 0 8px; }
 
 /* Locator result cards */
 .results-list.cards { list-style: none; padding: 8px; margin: 0; display: grid; gap: 12px; }
-.result-card { padding: 14px; display: grid; grid-template-columns: 90px 1fr auto; gap: 14px; align-items: center; cursor: pointer; border: 1px solid var(--border); border-radius: 14px; background: var(--panel); box-shadow: var(--shadow); }
+.result-card { padding: 14px; display: flex; flex-direction: column; gap: 10px; cursor: pointer; border: 1px solid var(--border); border-radius: 14px; background: var(--panel); box-shadow: var(--shadow); }
 .result-card:hover { transform: translateY(-1px); box-shadow: var(--shadow-lg); }
+.result-top { display: grid; grid-template-columns: 90px 1fr; gap: 12px; align-items: center; }
 .result-thumb { width: 90px; height: 90px; border-radius: 12px; background: #e2e8f0; object-fit: cover; border: 1px solid var(--border); }
 .result-info { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
 .result-title { font-size: 16px; }

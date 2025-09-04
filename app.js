@@ -461,6 +461,9 @@
         const li = document.createElement('li');
         li.className = 'result-card';
 
+        const top = document.createElement('div');
+        top.className = 'result-top';
+
         const thumb = document.createElement('img');
         thumb.className = 'result-thumb';
         try {
@@ -532,8 +535,9 @@
         actions.appendChild(saveBtn);
         actions.appendChild(moreBtn);
 
-        li.appendChild(thumb);
-        li.appendChild(info);
+        top.appendChild(thumb);
+        top.appendChild(info);
+        li.appendChild(top);
         li.appendChild(actions);
         els.resultsList.appendChild(li);
       });
