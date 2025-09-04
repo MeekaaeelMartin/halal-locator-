@@ -407,10 +407,13 @@ h3 { font-size: clamp(20px, 2.5vw, 24px); font-weight: 600; margin: 0 0 8px; }
 .carousel-track { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(240px, 1fr); gap: 16px; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 4px; -webkit-overflow-scrolling: touch; }
 .carousel-track > * { scroll-snap-align: start; }
 .carousel-arrows { display: flex; gap: 8px; }
+/* Ensure testimonial cards have ample spacing and fixed column width */
+#testimonialsCarousel .carousel-track { grid-auto-columns: 360px; gap: 28px; padding-bottom: 12px; }
+#testimonialsCarousel .testimonial-card { min-width: 360px; }
 /* Increase testimonial spacing */
 #testimonialsCarousel .carousel-track { gap: 24px; padding-bottom: 10px; }
 
-.card-image { position: relative; display: block; height: 200px; border-radius: 14px; border: 1px solid var(--border); box-shadow: var(--shadow); background: #111; background-image: var(--card-img, var(--bg)); background-size: cover; background-position: center; overflow: hidden; }
+.card-image { position: relative; display: block; height: 220px; border-radius: 14px; border: 1px solid var(--border); box-shadow: var(--shadow); background: #111; background-size: cover; background-position: center; overflow: hidden; }
 .card-image span { position: absolute; inset: auto 0 0 0; padding: 12px 14px; color: #fff; font-weight: 700; background: linear-gradient(180deg, transparent, rgba(2,6,23,0.75)); }
 .card-image::after { content: ""; position: absolute; inset: 0; background: rgba(2,6,23,0.2); transition: background 0.2s ease; }
 .card-image:hover::after { background: rgba(2,6,23,0.05); }
