@@ -31,7 +31,7 @@
     resultsPanel: document.getElementById('resultsPanel'),
     toggleListBtn: document.getElementById('toggleListBtn'),
     closeListBtn: document.getElementById('closeListBtn'),
-    filterChips: Array.from(document.querySelectorAll('.chip')),
+    filterChecks: Array.from(document.querySelectorAll('input[name="cuisineChk"]')),
     includeButcheries: document.getElementById('includeButcheries'),
     openNowChk: document.getElementById('openNowChk'),
     minRatingSelect: document.getElementById('minRatingSelect'),
@@ -171,15 +171,12 @@
   }
 
   function wireFilters() {
-    if (!els.filterChips || !els.filterChips.length) return;
-    els.filterChips.forEach((chip) => {
-      chip.addEventListener('click', () => {
-        els.filterChips.forEach(c => c.classList.remove('active'));
-        chip.classList.add('active');
-        selectedCuisine = chip.dataset.filter || '';
-        runSearch();
+    // Cuisine checkboxes -> build keyword with multiple cuisines
+    if (els.filterChecks && els.filterChecks.length) {
+      els.filterChecks.forEach((chk) => {
+        chk.addEventListener('change', () => runSearch());
       });
-    });
+    }
     if (els.includeButcheries) {
       els.includeButcheries.addEventListener('change', () => runSearch());
     }
@@ -268,10 +265,16 @@
     const radiusMeters = parseInt(els.radiusSelect.value, 10) || 5000;
     setStatus('Searching for halaal restaurants…');
 
+    // Build keyword from cuisine checkboxes
+    let cuisines = [];
+    if (els.filterChecks && els.filterChecks.length) {
+      cuisines = els.filterChecks.filter(c => c.checked).map(c => c.value);
+    }
+    const keyword = cuisines.length ? `halaal ${cuisines.join(' ')}` : (selectedCuisine ? `halaal ${selectedCuisine}` : 'halaal');
     const request = {
       location: center,
       radius: radiusMeters,
-      keyword: selectedCuisine ? `halaal ${selectedCuisine}` : 'halaal',
+      keyword,
       type: 'restaurant'
     };
     if (els.openNowChk && els.openNowChk.checked) {

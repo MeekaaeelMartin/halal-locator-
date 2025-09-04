@@ -52,19 +52,16 @@
           <button id="useLocationBtn" class="btn secondary">Use my location</button>
           <button id="searchBtn" class="btn primary">Search halaal</button>
           <button id="toggleListBtn" class="btn tertiary mobile-only" aria-expanded="false" aria-controls="resultsPanel">Results</button>
-          <button id="toggleViewBtn" class="btn tertiary" aria-pressed="false">Map + List</button>
         </div>
       </div>
       <div class="container" id="filtersRow" style="margin-top:8px">
-        <div class="chip-row" role="group" aria-label="Cuisine filters">
-          <button class="chip" data-filter="">All</button>
-          <button class="chip" data-filter="indian">Indian</button>
-          <button class="chip" data-filter="middle eastern">Middle Eastern</button>
-          <button class="chip" data-filter="seafood">Seafood</button>
-          <button class="chip" data-filter="cafe">Cafe</button>
-          <button class="chip" data-filter="burger">Burgers</button>
-          <button class="chip" data-filter="pizza">Pizza</button>
-          <button class="chip" data-filter="butchery">Butchery</button>
+        <div class="filter-checks" role="group" aria-label="Cuisine filters">
+          <label class="check-pill"><input type="checkbox" name="cuisineChk" value="indian" /> <span>Indian</span></label>
+          <label class="check-pill"><input type="checkbox" name="cuisineChk" value="middle eastern" /> <span>Middle Eastern</span></label>
+          <label class="check-pill"><input type="checkbox" name="cuisineChk" value="seafood" /> <span>Seafood</span></label>
+          <label class="check-pill"><input type="checkbox" name="cuisineChk" value="cafe" /> <span>Cafe</span></label>
+          <label class="check-pill"><input type="checkbox" name="cuisineChk" value="burger" /> <span>Burgers</span></label>
+          <label class="check-pill"><input type="checkbox" name="cuisineChk" value="pizza" /> <span>Pizza</span></label>
         </div>
         <div class="chip-row" role="group" aria-label="Additional filters" style="margin-top:10px">
           <label class="subtle" style="display:flex;align-items:center;gap:8px">
