@@ -10,11 +10,19 @@
     <header class="site-header">
       <div class="container header-row">
         <a class="brand" href="/">Halaal Restaurant Finder SA</a>
-        <nav class="site-nav">
+        <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu" aria-expanded="false" aria-controls="primaryNav">
+          <span></span><span></span><span></span>
+        </button>
+        <nav class="site-nav" id="primaryNav">
           <a class="nav-link" href="/">Home</a>
           <a class="nav-link" href="/locator.html">Locator</a>
+          <a class="nav-link" href="/blog.html">Blog</a>
           <a class="nav-link" href="/about.html">About</a>
           <a class="nav-link" href="/contact.html">Contact</a>
+          <label class="theme-switch" aria-label="Toggle dark mode">
+            <span class="muted">Dark</span>
+            <span class="switch"><input id="themeSwitch" type="checkbox" /><span class="slider"></span></span>
+          </label>
         </nav>
       </div>
     </header>
@@ -28,7 +36,24 @@
         <p>Built for South Africa • Data by Google Places</p>
       </div>
     </footer>
-    <script src="./config.js?v=3"></script>
+    <script src="./config.js?v=4"></script>
+    <script>
+      (function(){
+        const storageKey = 'theme';
+        const setTheme = (t) => { document.documentElement.setAttribute('data-theme', t); localStorage.setItem(storageKey, t); };
+        const saved = localStorage.getItem(storageKey);
+        if (saved) setTheme(saved);
+        const themeSwitch = document.getElementById('themeSwitch');
+        if (themeSwitch) { themeSwitch.checked = (document.documentElement.getAttribute('data-theme') === 'dark'); themeSwitch.addEventListener('change', () => setTheme(themeSwitch.checked ? 'dark' : 'light')); }
+        const header = document.querySelector('.site-header');
+        const menuToggle = document.getElementById('menuToggle');
+        const primaryNav = document.getElementById('primaryNav');
+        if (menuToggle && header && primaryNav) {
+          menuToggle.addEventListener('click', () => { const open = header.classList.toggle('nav-open'); menuToggle.setAttribute('aria-expanded', String(open)); });
+          primaryNav.addEventListener('click', (e) => { if (e.target && e.target.matches('a.nav-link')) { header.classList.remove('nav-open'); menuToggle.setAttribute('aria-expanded', 'false'); } });
+        }
+      })();
+    </script>
     <script>
       (function(){
         const params = new URLSearchParams(location.search);

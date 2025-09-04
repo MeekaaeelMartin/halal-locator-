@@ -35,9 +35,9 @@
     includeButcheries: document.getElementById('includeButcheries'),
     openNowChk: document.getElementById('openNowChk'),
     minRatingSelect: document.getElementById('minRatingSelect'),
-    detailsPanel: document.getElementById('detailsPanel'),
-    detailsContent: document.getElementById('detailsContent'),
-    detailsCloseBtn: document.getElementById('detailsCloseBtn'),
+    detailsPanel: null,
+    detailsContent: null,
+    detailsCloseBtn: null,
     toggleViewBtn: document.getElementById('toggleViewBtn'),
     layout: document.querySelector('.layout')
   };
@@ -167,9 +167,7 @@
         if (els.toggleListBtn) els.toggleListBtn.setAttribute('aria-expanded', 'false');
       });
     }
-    if (els.detailsCloseBtn && els.detailsPanel) {
-      els.detailsCloseBtn.addEventListener('click', () => closeDetails());
-    }
+    // details panel removed; navigation to details page instead
   }
 
   function wireFilters() {
@@ -415,14 +413,13 @@
   }
 
   function onMarkerClick(place, marker) {
-    // If we have place_id, get details, open infowindow and slide-out panel
+    // If we have place_id, get details and show a compact info window with More info link
     if (place.place_id) {
       try {
         placesService.getDetails({ placeId: place.place_id, fields: ['name','formatted_address','formatted_phone_number','website','opening_hours','rating','user_ratings_total','photos','url','geometry','place_id','reviews','editorial_summary'] }, (detail, status) => {
           const p = status === google.maps.places.PlacesServiceStatus.OK && detail ? detail : place;
           infoWindow.setContent(renderInfoContent(p));
           infoWindow.open(map, marker);
-          openDetails(p);
         });
         return;
       } catch (e) {
@@ -432,7 +429,6 @@
     // Show basic content
     infoWindow.setContent(renderInfoContent(place));
     infoWindow.open(map, marker);
-    openDetails(place);
   }
 
   function distanceMeters(a, b) {
@@ -526,7 +522,15 @@
           localStorage.setItem('savedPlaces', JSON.stringify(saved));
           setStatus('Saved to your list.');
         });
+        const moreBtn = document.createElement('a');
+        moreBtn.className = 'btn secondary';
+        moreBtn.style.padding = '6px 10px';
+        moreBtn.style.fontSize = '12px';
+        moreBtn.textContent = 'More info';
+        moreBtn.href = place.place_id ? (() => { const u = new URL(location.origin + '/details.html'); u.searchParams.set('placeId', place.place_id); u.searchParams.set('name', place.name||''); return u.toString(); })() : '#';
+        moreBtn.addEventListener('click', (e) => { e.stopPropagation(); });
         actions.appendChild(saveBtn);
+        actions.appendChild(moreBtn);
 
         li.appendChild(thumb);
         li.appendChild(info);
@@ -568,32 +572,7 @@
     `;
   }
 
-  function openDetails(place) {
-    if (!els.detailsPanel || !els.detailsContent) return;
-    const dist = map && place.geometry && place.geometry.location ? (distanceMeters(map.getCenter(), place.geometry.location) / 1000).toFixed(1) + ' km' : '';
-    const photoUrl = (place.photos && place.photos.length) ? (() => { try { return place.photos[0].getUrl({ maxWidth: 700 }); } catch(e) { return ''; } })() : '';
-    const reviews = Array.isArray(place.reviews) ? place.reviews.slice(0,3) : [];
-    const desc = place.editorial_summary && place.editorial_summary.overview ? place.editorial_summary.overview : '';
-    els.detailsContent.innerHTML = `
-      ${photoUrl ? `<img src="${photoUrl}" alt="${escapeHtml(place.name||'')}" style="width:100%;border-radius:12px; margin-bottom:10px"/>` : ''}
-      <div style="display:flex;flex-direction:column;gap:6px">
-        <div><strong>${escapeHtml(place.name||'')}</strong></div>
-        <div class="muted">${escapeHtml(place.formatted_address||'')}</div>
-        <div class="muted">${desc ? escapeHtml(desc) : ''}</div>
-        <div>${place.rating ? `${place.rating.toFixed(1)}★` : ''} ${place.user_ratings_total ? `(${place.user_ratings_total})` : ''} ${dist ? `• ${dist} from center` : ''}</div>
-        ${place.opening_hours && place.opening_hours.weekday_text ? `<div><details><summary>Opening hours</summary><div class="muted">${place.opening_hours.weekday_text.map(escapeHtml).join('<br/>')}</div></details></div>` : ''}
-        ${reviews.length ? `<div><h3 style="margin:10px 0 6px;font-size:14px">Recent reviews</h3>${reviews.map(r => `<div style=\"margin-bottom:8px\"><div style=\"font-weight:600\">${escapeHtml(r.author_name||'')}</div><div class=\"muted\" style=\"font-size:12px\">${escapeHtml(r.text||'')}</div></div>`).join('')}</div>` : ''}
-      </div>
-    `;
-    els.detailsPanel.classList.add('open');
-    els.detailsPanel.setAttribute('aria-hidden','false');
-  }
-
-  function closeDetails() {
-    if (!els.detailsPanel) return;
-    els.detailsPanel.classList.remove('open');
-    els.detailsPanel.setAttribute('aria-hidden','true');
-  }
+  // details panel removed
 
   function escapeHtml(str) {
     return String(str)
