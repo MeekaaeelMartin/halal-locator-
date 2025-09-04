@@ -70,7 +70,7 @@
         document.head.appendChild(script);
         function render(){
           const svc = new google.maps.places.PlacesService(document.createElement('div'));
-          svc.getDetails({ placeId, fields: ['name','formatted_address','formatted_phone_number','website','opening_hours','rating','user_ratings_total','photos','url','geometry','place_id','reviews','editorial_summary'] }, (p, status) => {
+          svc.getDetails({ placeId, fields: ['name','formatted_address','formatted_phone_number','international_phone_number','website','opening_hours','rating','user_ratings_total','photos','url','geometry','place_id','reviews','editorial_summary'] }, (p, status) => {
             if (status !== google.maps.places.PlacesServiceStatus.OK || !p) { root.innerHTML = '<p>Could not load place details.</p>'; return; }
             const photo = (p.photos && p.photos[0]) ? (function(){try{return p.photos[0].getUrl({maxWidth:900});}catch(e){return ''}})() : '';
             root.innerHTML = `
@@ -82,7 +82,7 @@
               ${p.editorial_summary && p.editorial_summary.overview ? `<p>${p.editorial_summary.overview}</p>`:''}
               <div class="cta-row" style="margin-top:10px">
                 ${p.place_id ? `<a class="btn primary" target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination_place_id=${encodeURIComponent(p.place_id)}">Directions</a>`:''}
-                ${p.formatted_phone_number ? `<a class="btn secondary" href="tel:${p.formatted_phone_number.replace(/\s/g,'')}">Call</a>`:''}
+                ${(p.international_phone_number||p.formatted_phone_number) ? `<a class="btn secondary" href="tel:${(p.international_phone_number||p.formatted_phone_number).replace(/\s/g,'')}">Call</a>`:''}
                 ${p.website ? `<a class="btn tertiary" target="_blank" rel="noopener" href="${p.website}">Website</a>`:''}
               </div>
               ${Array.isArray(p.reviews) && p.reviews.length ? `<h3 style="margin-top:16px">Reviews</h3>${p.reviews.slice(0,5).map(r=>`<div style=\"margin:10px 0\"><div style=\"font-weight:600\">${r.author_name||''}</div><div class=\"muted\" style=\"font-size:12px\">${r.text||''}</div></div>`).join('')}`:''}

@@ -407,6 +407,8 @@ h3 { font-size: clamp(20px, 2.5vw, 24px); font-weight: 600; margin: 0 0 8px; }
 .carousel-track { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(240px, 1fr); gap: 16px; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 4px; -webkit-overflow-scrolling: touch; }
 .carousel-track > * { scroll-snap-align: start; }
 .carousel-arrows { display: flex; gap: 8px; }
+/* Increase testimonial spacing */
+#testimonialsCarousel .carousel-track { gap: 24px; padding-bottom: 10px; }
 
 .card-image { position: relative; display: block; height: 200px; border-radius: 14px; border: 1px solid var(--border); box-shadow: var(--shadow); background: #111; background-image: var(--card-img, var(--bg)); background-size: cover; background-position: center; overflow: hidden; }
 .card-image span { position: absolute; inset: auto 0 0 0; padding: 12px 14px; color: #fff; font-weight: 700; background: linear-gradient(180deg, transparent, rgba(2,6,23,0.75)); }
@@ -418,6 +420,8 @@ h3 { font-size: clamp(20px, 2.5vw, 24px); font-weight: 600; margin: 0 0 8px; }
 .testimonial-card .avatar { width: 44px; height: 44px; border-radius: 50%; background-image: var(--img); background-size: cover; background-position: center; box-shadow: 0 0 0 2px #fff, 0 0 0 3px rgba(2,6,23,0.1); margin-bottom: 8px; }
 .testimonial-card .quote { font-size: 15px; margin-bottom: 16px; line-height: 1.85; }
 .testimonial-card .meta { color: var(--muted); font-size: 12px; }
+.testimonial-card { margin-right: 6px; }
+#testimonialsCarousel .carousel-track { gap: 28px; padding-bottom: 12px; }
 .stars { color: #f59e0b; letter-spacing: 2px; margin-right: 6px; }
 
 /* Subscribe CTA */
