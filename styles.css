@@ -208,7 +208,7 @@ h3 { font-size: clamp(20px, 2.5vw, 24px); font-weight: 600; margin: 0 0 8px; }
 .pagination { display: flex; gap: 8px; justify-content: center; padding: 10px 0 16px; }
 .pagination .btn { padding: 6px 10px; font-size: 12px; }
 
-.map-wrap { position: relative; background: var(--bg); }
+.map-wrap { position: relative; background: var(--bg); overflow: hidden; }
 .map { width: 100%; height: calc(100vh - 220px); min-height: 500px; }
 
 /* Details panel */

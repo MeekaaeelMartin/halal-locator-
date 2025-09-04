@@ -423,6 +423,8 @@
           const p = status === google.maps.places.PlacesServiceStatus.OK && detail ? detail : place;
           infoWindow.setContent(renderInfoContent(p));
           infoWindow.open(map, marker);
+          // Ensure infowindow stays fully visible
+          try { map.panTo(marker.getPosition()); } catch(e) {}
         });
         return;
       } catch (e) {
