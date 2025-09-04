@@ -88,10 +88,10 @@ h3 { font-size: clamp(20px, 2.5vw, 24px); font-weight: 600; margin: 0 0 8px; }
 .controls { 
   background: var(--panel); 
   border-bottom: 1px solid var(--border);
-  padding: 20px 0; 
+  padding: 12px 0; 
   box-shadow: var(--shadow);
 }
-.controls-grid { display: grid; grid-template-columns: 1fr 160px auto; gap: 12px; align-items: end; }
+.controls-grid { display: grid; grid-template-columns: 1fr 150px auto; gap: 10px; align-items: end; }
 .control-group label { 
   display: block; 
   font-size: 14px; 
@@ -101,12 +101,12 @@ h3 { font-size: clamp(20px, 2.5vw, 24px); font-weight: 600; margin: 0 0 8px; }
 }
 .control-group input, .control-group select {
   width: 100%; 
-  padding: 14px 16px; 
+  padding: 11px 14px; 
   border: 1px solid var(--border); 
   border-radius: 10px; 
   background: var(--panel); 
   color: var(--text);
-  font-size: 16px;
+  font-size: 15px;
   transition: all 0.2s ease;
 }
 .control-group input:focus, .control-group select:focus { 
@@ -146,10 +146,10 @@ h3 { font-size: clamp(20px, 2.5vw, 24px); font-weight: 600; margin: 0 0 8px; }
 
 .subtle { color: var(--muted); font-size: 12px; padding-top: 6px; min-height: 18px; }
 
-.filter-checks { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
-.check-pill { display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; border: 1px solid var(--border); border-radius: 999px; background: var(--panel); box-shadow: var(--shadow); cursor: pointer; }
+.filter-checks { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+.check-pill { display: inline-flex; align-items: center; gap: 8px; padding: 6px 10px; border: 1px solid var(--border); border-radius: 999px; background: var(--panel); box-shadow: var(--shadow); cursor: pointer; }
 .check-pill input { accent-color: var(--primary); width: 16px; height: 16px; }
-.check-pill span { font-weight: 600; font-size: 14px; }
+.check-pill span { font-weight: 600; font-size: 13px; }
 
 .layout { 
   display: grid; 
