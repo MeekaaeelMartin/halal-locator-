@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Blog Post</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./styles.css?v=4" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container header-row">
+        <a class="brand" href="/">Halaal Restaurant Finder SA</a>
+        <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu" aria-expanded="false" aria-controls="primaryNav">
+          <span></span><span></span><span></span>
+        </button>
+        <nav class="site-nav" id="primaryNav">
+          <a class="nav-link" href="/">Home</a>
+          <a class="nav-link" href="/locator.html">Locator</a>
+          <a class="nav-link" href="/blog.html">Blog</a>
+          <a class="nav-link" href="/about.html">About</a>
+          <a class="nav-link" href="/contact.html">Contact</a>
+          <label class="theme-switch" aria-label="Toggle dark mode">
+            <span class="muted">Dark</span>
+            <span class="switch"><input id="themeSwitch" type="checkbox" /><span class="slider"></span></span>
+          </label>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="container page">
+        <p><a class="nav-link" href="/blog.html" onclick="event.preventDefault(); history.length > 1 ? history.back() : (location.href='/blog.html');">← Back to blog</a></p>
+        <article id="postRoot"></article>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <div class="footer-grid">
+          <div>
+            <a class="footer-brand" href="/">Halaal Restaurant Finder SA</a>
+            <p class="muted">Find halal restaurants across South Africa.</p>
+          </div>
+          <div class="footer-col">
+            <h4>Explore</h4>
+            <ul class="footer-links">
+              <li><a href="/locator.html">Locator</a></li>
+              <li><a href="/blog.html">Blog</a></li>
+              <li><a href="/about.html">About</a></li>
+              <li><a href="/contact.html">Contact</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4>Categories</h4>
+            <ul class="footer-links">
+              <li><a href="/locator.html?cuisine=burger">Burgers</a></li>
+              <li><a href="/locator.html?cuisine=pizza">Pizza</a></li>
+              <li><a href="/locator.html?cuisine=indian">Indian</a></li>
+              <li><a href="/locator.html?cuisine=cafe">Cafés</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4>Connect</h4>
+            <ul class="footer-links">
+              <li><a href="https://instagram.com/halallocator" target="_blank" rel="noopener">Instagram</a></li>
+              <li><a href="mailto:info@halallocator.co.za">Email</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <div>© <span id="year"></span> Halaal Restaurant Finder SA</div>
+          <div class="muted">Data by Google Places • Verify halaal status directly with venues</div>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      (function(){
+        const storageKey = 'theme';
+        const setTheme = (t) => { document.documentElement.setAttribute('data-theme', t); localStorage.setItem(storageKey, t); };
+        const saved = localStorage.getItem(storageKey);
+        if (saved) setTheme(saved);
+        const themeSwitch = document.getElementById('themeSwitch');
+        if (themeSwitch) { themeSwitch.checked = (document.documentElement.getAttribute('data-theme') === 'dark'); themeSwitch.addEventListener('change', () => setTheme(themeSwitch.checked ? 'dark' : 'light')); }
+        const header = document.querySelector('.site-header');
+        const menuToggle = document.getElementById('menuToggle');
+        const primaryNav = document.getElementById('primaryNav');
+        if (menuToggle && header && primaryNav) {
+          menuToggle.addEventListener('click', () => { const open = header.classList.toggle('nav-open'); menuToggle.setAttribute('aria-expanded', String(open)); });
+          primaryNav.addEventListener('click', (e) => { if (e.target && e.target.matches('a.nav-link')) { header.classList.remove('nav-open'); menuToggle.setAttribute('aria-expanded', 'false'); } });
+        }
+        document.getElementById('year').textContent = new Date().getFullYear();
+
+        // Simple static post content loader based on slug
+        const posts = {
+          'top-halal-burger-spots-johannesburg': {
+            title: 'Top halal burger spots in Johannesburg',
+            date: 'Guides • 5 min read',
+            image: 'https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=1600&q=60',
+            body: '<p>Discover our favourite halal burger joints around Johannesburg, from smash burgers to gourmet stacks.</p><ul><li>Place A</li><li>Place B</li><li>Place C</li></ul>'
+          },
+          'halal-pizza-cape-town': {
+            title: 'Where to find halal pizza in Cape Town',
+            date: 'City Guides • 4 min read',
+            image: 'https://images.unsplash.com/photo-1548365328-9f547fb09530?auto=format&fit=crop&w=1600&q=60',
+            body: '<p>From Neapolitan to New York-style, here are halal-friendly pizza spots in Cape Town.</p>'
+          },
+          'best-halal-friendly-cafes': {
+            title: 'Best halal-friendly cafés to work from',
+            date: 'Lifestyle • 3 min read',
+            image: 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=1600&q=60',
+            body: '<p>Great coffee, Wi‑Fi, and halal snack options — perfect for remote work days.</p>'
+          }
+        };
+        const params = new URLSearchParams(location.search);
+        const slug = params.get('slug');
+        const post = posts[slug];
+        const root = document.getElementById('postRoot');
+        if (!post) { root.innerHTML = '<p>Post not found.</p>'; return; }
+        root.innerHTML = `
+          ${post.image ? `<img src="${post.image}" alt="${post.title}" style="width:100%;border-radius:12px;margin-bottom:12px"/>` : ''}
+          <h1>${post.title}</h1>
+          <div class="post-meta">${post.date}</div>
+          <div style="margin-top:12px">${post.body}</div>
+        `;
+      })();
+    </script>
+  </body>
+  </html>
+
+
